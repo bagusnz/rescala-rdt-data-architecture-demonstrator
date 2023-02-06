@@ -36,8 +36,8 @@ class DataManager[State: JsonValueCodec: DottedLattice: Bottom: HasDots](
     { () =>
       registry.remotes.foreach(requestMissingFrom)
     },
-    10000,
-    10000
+    100,
+    100
   )
 
   registry.remoteJoined.foreach(requestMissingFrom)

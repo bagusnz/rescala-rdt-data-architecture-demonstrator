@@ -61,7 +61,7 @@ object WebRepMain {
 
     @nowarn given JsonValueCodec[ReplicatedList[String]] = JsonCodecMaker.make(CodecMakerConfig.withMapAsArray(true))
 
-    val exData = new FbdcExampleData()
+    val exData = new FbdcExampleData(kofre.base.Id.asId("presentation") )
 
     val ccm = new ContentConnectionManager(exData.registry)
 
@@ -71,6 +71,7 @@ object WebRepMain {
         tags2.main(
           HTML.providers(exData),
           HTML.connectionManagement(ccm, exData),
+          HTML.peers(exData)
         )
       )
     }

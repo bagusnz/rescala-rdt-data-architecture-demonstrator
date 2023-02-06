@@ -13,6 +13,7 @@ import scalatags.JsDom.tags2.{article, aside, nav, section}
 import kofre.base.Id
 import loci.transmitter.RemoteRef
 import replication.fbdc.{FbdcExampleData, Req}
+import replication.{PeerPair}
 
 import scala.collection.immutable.LinearSeq
 
@@ -97,6 +98,20 @@ object HTML {
               case "fortune" => fortuneBox(exdat, id)
               case other     => northwindBox(exdat, id)
             }.toList
+          ).asInstanceOf[TypedTag[Element]]
+        }.toList
+      }.asModifierL
+    )
+
+  }
+
+  def peers(exdat: FbdcExampleData) = {
+    div(
+      h1("Connected peers"),
+      exdat.connections.map { peer =>
+        peer.elements.map { p =>
+          section(
+            header(h2(s"left=${p.left}, right=${p.right}")),
           ).asInstanceOf[TypedTag[Element]]
         }.toList
       }.asModifierL
