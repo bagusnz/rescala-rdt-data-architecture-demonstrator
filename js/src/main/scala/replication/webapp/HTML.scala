@@ -34,50 +34,50 @@ object HTML {
   def connectionManagement(ccm: ContentConnectionManager, fbdcExampleData: FbdcExampleData) = {
     import fbdcExampleData.dataManager
     List(
-      h1("connection management"),
-      section(table(
-        tr(td("total state size"), dataManager.encodedStateSize.map(s => td(s)).asModifier),
-        tr(
-          td("request queue"),
-          dataManager.mergedState.map(v => td(v.store.requests.elements.size)).asModifier
-        ),
-      )),
-      section(
-        button("disseminate local", onclick := leftClickHandler(dataManager.disseminateLocalBuffer())),
-        button("disseminate all", onclick   := leftClickHandler(dataManager.disseminateFull()))
-      ),
-      section(table(
-        thead(th("remote ref"), th("connection"), th("request"), th("dots")),
-        tr(
-          td(Id.unwrap(dataManager.replicaId)),
-          td(),
-          td(),
-          table(
-            dataManager.currentContext.map(dotsToRows).asModifierL
-          )
-        ),
-        ccm.connectedRemotes.map { all =>
-          all.toList.sortBy(_._1.toString).map { (rr, connected) =>
-            tr(
-              td(remotePrettyName(rr)),
-              if !connected
-              then td("disconnected")
-              else
-                List(
-                  td(button("disconnect", onclick := leftClickHandler(rr.disconnect()))),
-                  td(button("request", onclick := leftClickHandler(dataManager.requestMissingFrom(rr)))),
-                  td(table(
-                    dataManager.contextOf(rr).map(dotsToRows).asModifierL
-                  ))
-                )
-            )
-          }
-        }.asModifierL,
-      )),
+      h2("Connect to server to start the real-time visualization"),
+//      section(table(
+//        tr(td("total state size"), dataManager.encodedStateSize.map(s => td(s)).asModifier),
+//        tr(
+//          td("request queue"),
+//          dataManager.mergedState.map(v => td(v.store.requests.elements.size)).asModifier
+//        ),
+//      )),
+//      section(
+//        button("disseminate local", onclick := leftClickHandler(dataManager.disseminateLocalBuffer())),
+//        button("disseminate all", onclick   := leftClickHandler(dataManager.disseminateFull()))
+//      ),
+//      section(table(
+//        thead(th("remote ref"), th("connection"), th("request"), th("dots")),
+//        tr(
+//          td(Id.unwrap(dataManager.replicaId)),
+//          td(),
+//          td(),
+//          table(
+//            dataManager.currentContext.map(dotsToRows).asModifierL
+//          )
+//        ),
+//        ccm.connectedRemotes.map { all =>
+//          all.toList.sortBy(_._1.toString).map { (rr, connected) =>
+//            tr(
+//              td(remotePrettyName(rr)),
+//              if !connected
+//              then td("disconnected")
+//              else
+//                List(
+//                  td(button("disconnect", onclick := leftClickHandler(rr.disconnect()))),
+//                  td(button("request", onclick := leftClickHandler(dataManager.requestMissingFrom(rr)))),
+//                  td(table(
+//                    dataManager.contextOf(rr).map(dotsToRows).asModifierL
+//                  ))
+//                )
+//            )
+//          }
+//        }.asModifierL,
+//      )),
       section(aside(
         "remote url: ",
         ccm.wsUri,
-        button("connect", onclick := leftClickHandler(ccm.connect()))
+        button("Connect", onclick := leftClickHandler(ccm.connect()))
       ))
     )
   }
@@ -105,18 +105,22 @@ object HTML {
 
   }
 
-  def peers(exdat: FbdcExampleData) = {
+  def visualization() = {
     div(
-      h1("Connected peers"),
-      exdat.connections.map { peer =>
-        peer.elements.map { p =>
-          section(
-            header(h2(s"left=${p.left}, right=${p.right}")),
-          ).asInstanceOf[TypedTag[Element]]
-        }.toList
-      }.asModifierL
+      div(
+        id := "divId",
+        `class` := "row",
+        div(
+          `class` := "col",
+          canvas(
+            id := "canvasId",
+            border := "1px solid black",
+            width := "100%",
+            height := "100%",
+          )
+        )
+      )
     )
-
   }
 
   def fortuneBox(exdat: FbdcExampleData, id: Id) = aside(

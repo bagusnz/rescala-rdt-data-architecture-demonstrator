@@ -7,17 +7,16 @@ import kofre.datatypes.ReplicatedList
 import kofre.dotted.DottedLattice
 import loci.registry.Registry
 import org.scalajs.dom
-import org.scalajs.dom.{Fetch, HttpMethod, RequestInit}
-import replication.DataManager
+import org.scalajs.dom.{CanvasRenderingContext2D, Fetch, HttpMethod, RequestInit}
+import replication.{DataManager, PeerPair}
 import rescala.default.*
 import rescala.extra.Tags.*
 import scalatags.JsDom.attrs.id
 import scalatags.JsDom.implicits.{stringAttr, stringFrag}
-import scalatags.JsDom.tags.{body, h1, p, table, form, span, SeqFrag, SeqNode}
+import scalatags.JsDom.tags.{SeqFrag, SeqNode, body, form, h1, p, span, table}
 import replication.JsoniterCodecs.given
-import scalatags.JsDom.tags2.{aside, article, main}
+import scalatags.JsDom.tags2.{article, aside, main}
 import scalatags.JsDom.tags2
-
 import replication.fbdc.FbdcExampleData
 
 import scala.annotation.nowarn
@@ -69,9 +68,9 @@ object WebRepMain {
       body(
         id := "index",
         tags2.main(
-          HTML.providers(exData),
+//          HTML.providers(exData),
           HTML.connectionManagement(ccm, exData),
-          HTML.peers(exData)
+          HTML.visualization()
         )
       )
     }
@@ -79,6 +78,11 @@ object WebRepMain {
     val bodyParent = dom.document.body.parentElement
     bodyParent.removeChild(dom.document.body)
     bodySig.asModifier.applyTo(bodyParent)
+
+    // draw network everytime peers are updating
+    exData.connections.observe(peers => {
+      DrawNetwork(peers.elements).draw();
+    })
 
   }
 }
