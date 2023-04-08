@@ -241,7 +241,7 @@ class DrawNetwork(val pairs: Set[PeerPair]) {
 
       // Make the connection lines
       ctx.lineWidth = 3
-      ctx.strokeStyle = "green"
+      ctx.strokeStyle = "blue"
       ctx.font = "14px sans-serif"
       ctx.beginPath()
       pairs.foreach(pair => {

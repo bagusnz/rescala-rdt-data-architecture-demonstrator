@@ -114,7 +114,7 @@ object HTML {
           `class` := "col",
           canvas(
             id := "canvasId",
-            border := "1px solid black",
+//            border := "1px solid black",
             width := "100%",
             height := "100%",
           )
